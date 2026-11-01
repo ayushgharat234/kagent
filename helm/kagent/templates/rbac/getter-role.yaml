@@ -35,10 +35,16 @@
   - get
   - patch
   - update
+# Only what the controller reads. Secrets, ConfigMaps and Services need list and
+# watch even where the code only gets one, because the controller-runtime client
+# reads through its informer cache.
 - apiGroups:
   - ""
   resources:
-  - "*"
+  - secrets
+  - configmaps
+  - namespaces
+  - services
   verbs:
   - get
   - list
@@ -47,38 +53,6 @@
   - ate.dev
   resources:
   - workerpools
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - "apps"
-  resources:
-  - "*"
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - "batch"
-  resources:
-  - "*"
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - "rbac.authorization.k8s.io"
-  resources:
-  - "*"
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - gateway.networking.k8s.io
-  resources:
-  - "*"
   verbs:
   - get
   - list

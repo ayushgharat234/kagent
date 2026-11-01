@@ -97,7 +97,7 @@ tests:
           path: rules
           content:
             apiGroups: [""]
-            resources: ["*"]
+            resources: ["secrets", "configmaps", "namespaces", "services"]
             verbs: ["get", "list", "watch"]
 
   - it: should authorize sandbox template catalog access
@@ -118,8 +118,50 @@ tests:
           path: rules
           content:
             apiGroups: [""]
+            resources: ["secrets", "configmaps"]
+            verbs: ["create", "update", "delete"]
+      - contains:
+          path: rules
+          content:
+            apiGroups: [""]
+            resources: ["services"]
+            verbs: ["delete"]
+
+  - it: controller roles should not grant wildcard resources
+    asserts:
+      - notContains:
+          path: rules
+          content:
             resources: ["*"]
-            verbs: ["create", "update", "patch", "delete"]
+          any: true
+        template: rbac/getter-role.yaml
+      - notContains:
+          path: rules
+          content:
+            resources: ["*"]
+          any: true
+        template: rbac/writer-role.yaml
+
+  - it: namespaced roles should not grant wildcard resources
+    release:
+      namespace: NAMESPACE
+    set:
+      rbac.namespaces:
+        - NAMESPACE
+        - other
+    asserts:
+      - notContains:
+          path: rules
+          content:
+            resources: ["*"]
+          any: true
+        template: rbac/getter-role.yaml
+      - notContains:
+          path: rules
+          content:
+            resources: ["*"]
+          any: true
+        template: rbac/writer-role.yaml
 
   - it: should use custom namespace when overridden
     set:

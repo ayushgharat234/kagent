@@ -35,38 +35,18 @@
 - apiGroups:
   - ""
   resources:
-  - "*"
+  - secrets
+  - configmaps
   verbs:
   - create
   - update
-  - patch
   - delete
+# Removing a Service-type tool server deletes the Service itself.
 - apiGroups:
-  - "apps"
+  - ""
   resources:
-  - "*"
+  - services
   verbs:
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - "batch"
-  resources:
-  - "*"
-  verbs:
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - gateway.networking.k8s.io
-  resources:
-  - "*"
-  verbs:
-  - create
-  - update
-  - patch
   - delete
 - apiGroups:
   - agents.x-k8s.io
